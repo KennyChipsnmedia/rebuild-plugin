@@ -74,22 +74,10 @@ THE SOFTWARE.
                         <j:set var="page"
                                value="${it.getRebuildParameterPage(parameterValue)}"/>
                         <j:if test="${page != null}">
-                            <!-- KIKIM split ExtendedChoiceParameter -->
-                            <j:if test="${parameterDefinition.descriptor.displayName == 'Extended Choice Parameter'}">
-                                <j:set var="valueMap" value="${it.getValueMap(parameterValue)}"/>
-
-                                <j:scope>
-                                    <st:include it="${parameterDefinition}"
-                                                class="${page.clazz}" page="${page.page}"/>
-                                </j:scope>
-                            </j:if>
-                            <j:if test="${parameterDefinition.descriptor.displayName != 'Extended Choice Parameter'}">
-                                <j:scope>
-                                    <st:include it="${parameterValue}"
-                                                class="${page.clazz}" page="${page.page}"/>
-                                </j:scope>
-                            </j:if>
-
+                            <j:scope>
+                                <st:include it="${parameterValue}"
+                                            class="${page.clazz}" page="${page.page}"/>
+                            </j:scope>
                         </j:if>
                         <j:if test="${page == null}">
                             <!-- Let's fallback on the regular valuePage implementation -->

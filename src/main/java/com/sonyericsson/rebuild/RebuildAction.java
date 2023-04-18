@@ -24,6 +24,8 @@
  */
 package com.sonyericsson.rebuild;
 
+import com.cwctravel.hudson.plugins.extended_choice_parameter.ExtendedChoiceParameterDefinition;
+import com.cwctravel.hudson.plugins.extended_choice_parameter.ExtendedChoiceParameterValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import hudson.Extension;
@@ -33,10 +35,9 @@ import hudson.model.Action;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import hudson.matrix.MatrixRun;
 import hudson.model.BooleanParameterValue;
@@ -70,7 +71,7 @@ import org.kohsuke.stapler.StaplerResponse;
  * @author Shemeer S;
  */
 public class RebuildAction implements Action {
-
+    private static final Logger LOGGER = Logger.getLogger(RebuildAction.class.getName());
     private static final String SVN_TAG_PARAM_CLASS = "hudson.scm.listtagsparameter.ListSubversionTagsParameterValue";
     /*
      * All the below transient variables are declared only for backward
@@ -282,6 +283,7 @@ public class RebuildAction implements Action {
             List<ParameterValue> values = new ArrayList<>();
             ParametersAction paramAction = build.getAction(ParametersAction.class);
             JSONObject formData = req.getSubmittedForm();
+            LOGGER.log(Level.INFO, "KIKIM, formData:" + formData.toString());
             if (!formData.isEmpty()) {
                 JSONArray a = JSONArray.fromObject(formData.get("parameter"));
                 for (Object o : a) {
@@ -419,7 +421,20 @@ public class RebuildAction implements Action {
         // this is normal case when user try to rebuild a parameterized job.
         if (paramDefProp != null) {
             paramDef = paramDefProp.getParameterDefinition(parameterName);
+
             if (paramDef != null) {
+
+                // KIKIM
+                if(paramDef instanceof ExtendedChoiceParameterDefinition) {
+                    ExtendedChoiceParameterDefinition ecpd = (ExtendedChoiceParameterDefinition)paramDef;
+                    ecpd.getDescriptor().getDisplayName();
+
+
+                    LOGGER.log(Level.INFO, "KIKIM It's ExtendedChoiceParameterDefinition paramName:" + parameterName);
+                    LOGGER.log(Level.INFO, "KIKIM json:" + jo.toString());
+
+                }
+
                 // The copy artifact plugin throws an exception when using createValue(req, jo)
                 // If the parameter comes from the copy artifact plugin, then use the single argument createValue
                 if (jo.toString().contains("BuildSelector") || jo.toString().contains("WorkspaceSelector")) {
@@ -503,6 +518,20 @@ public class RebuildAction implements Action {
             }
         }
 
+
+        // KIKIM
+        String canonName = getClass().getCanonicalName().replace('.', '/');
+        String simpleName = value.getClass().getSimpleName();
+        String v = value.getValue().toString();
+        LOGGER.log(Level.INFO, "KIKIM canonName:" + canonName + " simpleName:" + simpleName + " value.value:" + v);
+
+        // KIKIM, TODO delete
+        if(simpleName.equals("ExtendedChoiceParameterValue")) {
+            ExtendedChoiceParameterValue ecv = (ExtendedChoiceParameterValue) value;
+        }
+        //
+
+
         // Check if we have a branched Jelly in the plugin.
         if (getClass().getResource(String.format("/%s/%s.jelly", getClass().getCanonicalName().replace('.', '/'), value.getClass().getSimpleName())) != null) {
             // No provider available, use an existing view provided by rebuild plugin.
@@ -515,5 +544,11 @@ public class RebuildAction implements Action {
         // Else we return that we haven't found anything.
         // So Jelly fallback could occur.
         return null;
+    }
+
+    public Map<String, Boolean> getValueMap(ParameterValue value) {
+        Map<String, Boolean> valueMap = new HashMap<>();
+        Arrays.stream(value.getValue().toString().split(",")).filter(v -> v.trim().length() > 0).forEach(v -> valueMap.put(v, true));
+        return valueMap;
     }
 }
