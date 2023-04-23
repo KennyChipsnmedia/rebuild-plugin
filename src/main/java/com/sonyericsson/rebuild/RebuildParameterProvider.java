@@ -24,6 +24,7 @@
 
 package com.sonyericsson.rebuild;
 
+import hudson.model.ParameterDefinition;
 import jenkins.model.Jenkins;
 import hudson.Extension;
 import hudson.ExtensionList;
@@ -82,7 +83,7 @@ public abstract class RebuildParameterProvider implements ExtensionPoint {
      * @param value a value to be shown in a rebuild page.
      * @return page for the parameter value. null for parameter values cannot be handled.
      */
-    public abstract RebuildParameterPage getRebuildPage(ParameterValue value);
+    public abstract RebuildParameterPage getRebuildPage(ParameterDefinition definition, ParameterValue value);
 
     /**
      * @return all {@link RebuildParameterProvider} registered to Jenkins.

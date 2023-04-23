@@ -510,13 +510,17 @@ public class RebuildAction implements Action {
      * @param value the parameter value to show to rebuild.
      * @return page for the parameter value, or null if no suitable option found.
      */
-    public RebuildParameterPage getRebuildParameterPage(ParameterValue value) {
-        for (RebuildParameterProvider provider: RebuildParameterProvider.all()) {
-            RebuildParameterPage page = provider.getRebuildPage(value);
-            if (page != null) {
-                return page;
+    public RebuildParameterPage getRebuildParameterPage(ParameterDefinition definition, ParameterValue value) {
+        if(definition != null) {
+            for (RebuildParameterProvider provider: RebuildParameterProvider.all()) {
+//            RebuildParameterPage page = provider.getRebuildPage(value);
+                RebuildParameterPage page = provider.getRebuildPage(definition, value);
+                if (page != null) {
+                    return page;
+                }
             }
         }
+
 
 
         // KIKIM

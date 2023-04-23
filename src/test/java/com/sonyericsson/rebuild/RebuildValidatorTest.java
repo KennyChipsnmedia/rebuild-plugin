@@ -29,20 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
-import hudson.model.AbstractBuild;
-import hudson.model.Action;
-import hudson.model.Build;
-import hudson.model.ParameterValue;
-import hudson.model.Cause;
-import hudson.model.CauseAction;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.ParametersAction;
-import hudson.model.ParametersDefinitionProperty;
-import hudson.model.Project;
-import hudson.model.Run;
-import hudson.model.StringParameterDefinition;
-import hudson.model.StringParameterValue;
+import hudson.model.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -669,7 +656,7 @@ public class RebuildValidatorTest {
     public static class TestRebuildParameterProvider extends
             RebuildParameterProvider {
         @Override
-        public RebuildParameterPage getRebuildPage(ParameterValue value) {
+        public RebuildParameterPage getRebuildPage(ParameterDefinition definition, ParameterValue value) {
             if (!(value instanceof SupportedUnknownParameterValue)) {
                 return null;
             }

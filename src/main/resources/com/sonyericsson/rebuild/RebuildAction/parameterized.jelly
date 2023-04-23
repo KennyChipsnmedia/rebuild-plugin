@@ -76,7 +76,7 @@ THE SOFTWARE.
                         <j:if test="${page != null}">
                             <!-- KIKIM split ExtendedChoiceParameter -->
                             <j:if test="${parameterDefinition.descriptor.displayName == 'Extended Choice Parameter'}">
-                                <j:set var="valueMap" value="${it.getValueMap(parameterValue)}"/>
+                                <j:set var="valueMap" value="${it.getValueMap(parameterDefinition, parameterValue)}"/>
 
                                 <j:scope>
                                     <st:include it="${parameterDefinition}"
@@ -109,7 +109,7 @@ THE SOFTWARE.
                     <j:forEach var="parameterValue" items="${paramAction.parameters}">
                         <j:scope>
                             <j:set var="page"
-                                   value="${it.getRebuildParameterPage(parameterValue)}"/>
+                                   value="${it.getRebuildParameterPage(null, parameterValue)}"/>
                             <st:include it="${parameterValue}" class="${page.clazz}"
                                         page="${page.page}"/>
                         </j:scope>
