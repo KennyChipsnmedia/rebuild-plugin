@@ -498,7 +498,6 @@ public class RebuildAction implements Action {
     public RebuildParameterPage getRebuildParameterPage(ParameterDefinition definition, ParameterValue value) {
         if(definition != null) {
             for (RebuildParameterProvider provider: RebuildParameterProvider.all()) {
-//            RebuildParameterPage page = provider.getRebuildPage(value);
                 RebuildParameterPage page = provider.getRebuildPage(definition, value);
                 if (page != null) {
                     return page;

@@ -75,15 +75,12 @@ THE SOFTWARE.
                                value="${it.getRebuildParameterPage(parameterDefinition, parameterValue)}"/>
                         <j:if test="${page != null}">
                             <!--Kenny, If page.definition is not null, it comes from cbuilder -->
-                            <j:scope>
-                                <j:if test="page.definition != null">
-                                    <st:include it="${page.definition}" class="${page.clazz}" page="${page.page}"/>
-                                </j:if>
-                                <j:if test="page.definition == null">
-                                    <st:include it="$parameterValue}" class="${page.clazz}" page="${page.page}"/>
-                                </j:if>
-                            </j:scope>
-
+                            <j:if test="${page.definition != null}">
+                                <st:include it="${page.definition}" class="${page.clazz}" page="${page.page}"/>
+                            </j:if>
+                            <j:if test="${page.definition == null}">
+                                <st:include it="${parameterValue}" class="${page.clazz}" page="${page.page}"/>
+                            </j:if>
                         </j:if>
                         <j:if test="${page == null}">
                             <!-- Let's fallback on the regular valuePage implementation -->
