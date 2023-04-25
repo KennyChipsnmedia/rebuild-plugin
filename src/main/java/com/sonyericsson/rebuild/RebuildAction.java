@@ -26,11 +26,12 @@ package com.sonyericsson.rebuild;
 
 import com.cwctravel.hudson.plugins.extended_choice_parameter.ExtendedChoiceParameterDefinition;
 import com.cwctravel.hudson.plugins.extended_choice_parameter.ExtendedChoiceParameterValue;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import hudson.Extension;
 import hudson.ExtensionList;
-import hudson.model.Action;
+import hudson.model.*;
 
 import javax.servlet.ServletException;
 
@@ -40,21 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.matrix.MatrixRun;
-import hudson.model.BooleanParameterValue;
-import hudson.model.Cause;
-import hudson.model.CauseAction;
-import hudson.model.Item;
-import hudson.model.Job;
-import hudson.model.ParameterValue;
-import hudson.model.ParametersAction;
-import hudson.model.ParametersDefinitionProperty;
 import hudson.model.Queue;
-import hudson.model.Run;
-import hudson.model.SimpleParameterDefinition;
-import hudson.model.ParameterDefinition;
-import hudson.model.PasswordParameterValue;
-import hudson.model.RunParameterValue;
-import hudson.model.StringParameterValue;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
@@ -423,18 +410,6 @@ public class RebuildAction implements Action {
             paramDef = paramDefProp.getParameterDefinition(parameterName);
 
             if (paramDef != null) {
-
-                // KIKIM
-                if(paramDef instanceof ExtendedChoiceParameterDefinition) {
-                    ExtendedChoiceParameterDefinition ecpd = (ExtendedChoiceParameterDefinition)paramDef;
-                    ecpd.getDescriptor().getDisplayName();
-
-
-                    LOGGER.log(Level.INFO, "KIKIM It's ExtendedChoiceParameterDefinition paramName:" + parameterName);
-                    LOGGER.log(Level.INFO, "KIKIM json:" + jo.toString());
-
-                }
-
                 // The copy artifact plugin throws an exception when using createValue(req, jo)
                 // If the parameter comes from the copy artifact plugin, then use the single argument createValue
                 if (jo.toString().contains("BuildSelector") || jo.toString().contains("WorkspaceSelector")) {
@@ -506,6 +481,16 @@ public class RebuildAction implements Action {
         return actions;
     }
 
+    public <T> T instantiate(final String className, final Class<T> type){
+        try{
+            return type.cast(Class.forName(className).newInstance());
+        } catch(InstantiationException
+            | IllegalAccessException
+            | ClassNotFoundException e){
+            throw new IllegalStateException(e);
+        }
+    }
+
     /**
      * @param value the parameter value to show to rebuild.
      * @return page for the parameter value, or null if no suitable option found.
@@ -521,27 +506,13 @@ public class RebuildAction implements Action {
             }
         }
 
-
-
-        // KIKIM
-        String canonName = getClass().getCanonicalName().replace('.', '/');
-        String simpleName = value.getClass().getSimpleName();
-        String v = value.getValue().toString();
-        LOGGER.log(Level.INFO, "KIKIM canonName:" + canonName + " simpleName:" + simpleName + " value.value:" + v);
-
-        // KIKIM, TODO delete
-        if(simpleName.equals("ExtendedChoiceParameterValue")) {
-            ExtendedChoiceParameterValue ecv = (ExtendedChoiceParameterValue) value;
-        }
-        //
-
-
         // Check if we have a branched Jelly in the plugin.
         if (getClass().getResource(String.format("/%s/%s.jelly", getClass().getCanonicalName().replace('.', '/'), value.getClass().getSimpleName())) != null) {
             // No provider available, use an existing view provided by rebuild plugin.
             return new RebuildParameterPage(
                     getClass(),
-                    String.format("%s.jelly", value.getClass().getSimpleName())
+                    String.format("%s.jelly", value.getClass().getSimpleName()),
+                    null
                     );
 
         }
@@ -550,9 +521,4 @@ public class RebuildAction implements Action {
         return null;
     }
 
-    public Map<String, Boolean> getValueMap(ParameterValue value) {
-        Map<String, Boolean> valueMap = new HashMap<>();
-        Arrays.stream(value.getValue().toString().split(",")).filter(v -> v.trim().length() > 0).forEach(v -> valueMap.put(v, true));
-        return valueMap;
-    }
 }

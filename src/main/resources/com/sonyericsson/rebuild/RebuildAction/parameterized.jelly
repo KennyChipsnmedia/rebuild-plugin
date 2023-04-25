@@ -72,23 +72,17 @@ THE SOFTWARE.
                            value="${paramAction.getParameter(parameterDefinition.name)}"/>
                     <j:if test="${parameterValue != null}">
                         <j:set var="page"
-                               value="${it.getRebuildParameterPage(parameterValue)}"/>
+                               value="${it.getRebuildParameterPage(parameterDefinition, parameterValue)}"/>
                         <j:if test="${page != null}">
-                            <!-- KIKIM split ExtendedChoiceParameter -->
-                            <j:if test="${parameterDefinition.descriptor.displayName == 'Extended Choice Parameter'}">
-                                <j:set var="valueMap" value="${it.getValueMap(parameterDefinition, parameterValue)}"/>
-
-                                <j:scope>
-                                    <st:include it="${parameterDefinition}"
-                                                class="${page.clazz}" page="${page.page}"/>
-                                </j:scope>
-                            </j:if>
-                            <j:if test="${parameterDefinition.descriptor.displayName != 'Extended Choice Parameter'}">
-                                <j:scope>
-                                    <st:include it="${parameterValue}"
-                                                class="${page.clazz}" page="${page.page}"/>
-                                </j:scope>
-                            </j:if>
+                            <!--Kenny, If page.definition is not null, it comes from cbuilder -->
+                            <j:scope>
+                                <j:if test="page.definition != null">
+                                    <st:include it="${page.definition}" class="${page.clazz}" page="${page.page}"/>
+                                </j:if>
+                                <j:if test="page.definition == null">
+                                    <st:include it="$parameterValue}" class="${page.clazz}" page="${page.page}"/>
+                                </j:if>
+                            </j:scope>
 
                         </j:if>
                         <j:if test="${page == null}">

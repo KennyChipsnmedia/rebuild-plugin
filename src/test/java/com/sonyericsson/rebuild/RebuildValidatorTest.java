@@ -660,7 +660,7 @@ public class RebuildValidatorTest {
             if (!(value instanceof SupportedUnknownParameterValue)) {
                 return null;
             }
-            return new RebuildParameterPage(SupportedUnknownParameterValue.class, "rebuild.groovy");
+            return new RebuildParameterPage(SupportedUnknownParameterValue.class, "rebuild.groovy", definition);
         }
     }
 

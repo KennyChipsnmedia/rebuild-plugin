@@ -16,7 +16,7 @@
     </properties>
     <groupId>com.sonyericsson.hudson.plugins.rebuild</groupId>
     <artifactId>rebuild</artifactId>
-    <version>1.34</version>
+    <version>1.34.0</version>
     <packaging>hpi</packaging>
     <name>Rebuilder</name>
     <repositories>
@@ -85,9 +85,6 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.5</version>
                 <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <!-- Optional derectory to put findbugs xdoc xml report -->
-                    <!--<xmlOutputDirectory>target/site</xmlOutputDirectory>-->
                 </configuration>
             </plugin>
         </plugins>

@@ -24,6 +24,8 @@
 
 package com.sonyericsson.rebuild;
 
+import hudson.model.ParameterDefinition;
+
 /**
  * An object contains information of the view to show parameters in rebuild page.
  */
@@ -43,13 +45,28 @@ public class RebuildParameterPage {
     public String getPage() {
         return page;
     }
+
+
+    /**
+     * Author: Kenny
+     */
+    private final ParameterDefinition definition;
+
+    /**
+     * Author: Kenny
+     * @return
+     */
+    public ParameterDefinition getDefinition() {
+        return definition;
+    }
     
     /**
      * @param clazz the class for the view.
      * @param page the path of jelly(or groovy) file.
      */
-    public RebuildParameterPage(Class<?> clazz, String page) {
+    public RebuildParameterPage(Class<?> clazz, String page, ParameterDefinition definition) {
         this.clazz = clazz;
         this.page = page;
+        this.definition = definition;
     }
 }
