@@ -270,7 +270,7 @@ public class RebuildAction implements Action {
             List<ParameterValue> values = new ArrayList<>();
             ParametersAction paramAction = build.getAction(ParametersAction.class);
             JSONObject formData = req.getSubmittedForm();
-            LOGGER.log(Level.INFO, "KIKIM, formData:" + formData.toString());
+            LOGGER.log(Level.INFO, "Kenny, formData:" + formData.toString());
             if (!formData.isEmpty()) {
                 JSONArray a = JSONArray.fromObject(formData.get("parameter"));
                 for (Object o : a) {
