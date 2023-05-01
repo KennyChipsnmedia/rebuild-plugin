@@ -498,10 +498,20 @@ public class RebuildAction implements Action {
     public RebuildParameterPage getRebuildParameterPage(ParameterDefinition definition, ParameterValue value) {
         if(definition != null) {
             for (RebuildParameterProvider provider: RebuildParameterProvider.all()) {
-                RebuildParameterPage page = provider.getRebuildPage(definition, value);
+
+                RebuildParameterPage page = null;
+                try {
+                    page = provider.getRebuildPage(definition, value);
+                }
+                catch (Exception e) {
+                    String emsg = e.getMessage() +  " class name" + provider.getClass().getName() + " class desc:" + getClass().toString();
+                    LOGGER.log(Level.SEVERE, emsg, e);
+                }
+
                 if (page != null) {
                     return page;
                 }
+
             }
         }
 
